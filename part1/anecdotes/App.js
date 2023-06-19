@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const Anecdote = ({title,text,nVotes}) => {
+  return (
+    <div>
+      <h1>{title}</h1>
+      <p>{text}</p>
+      <p>{nVotes} votes</p>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -14,25 +24,27 @@ const App = () => {
 
   const [votes,setVotes] = useState(new Array(8).fill(0))
   const [selected, setSelected] = useState(0)
+  const [best, setBest] = useState(0)
 
   const handleNext = () => {
     setSelected(Math.floor(Math.random() * 8))
-    console.log(selected)
   }
 
   const handleVote = () => {
-    const lVotes = {...votes}
+    const lVotes = [...votes]
     lVotes[selected] += 1;
-    setSelected(lVotes)
-    console.log(lVotes)
+    setVotes(lVotes)
+    setBest(lVotes.reduce((maxi, val, i, l) => (val > l[maxi] ? i : maxi), 0))
+    //console.log(lVotes)
   }
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>{votes[selected]} votes</p>
+      <Anecdote title='Anecdote du jour' text={anecdotes[selected]} nVotes={votes[selected]} />
       <button onClick={handleVote}>vote</button>
       <button onClick={handleNext}>next quote</button>
+      <Anecdote title='Anecdote du jour' text={anecdotes[best]} nVotes={votes[best]} />
+
     </div>
   )
 }
